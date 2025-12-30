@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpamShield AI - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>SpamShield</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#">Dashboard</a></li>
+                <li><a href="#">Analytics</a></li>
+                <li><a href="#">API Access</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-menu">
+                    <button id="devBtn" class="btn-secondary">👩‍💻 Developer API</button>
+                    <div class="user-profile">
+                        <div class="avatar">VK</div>
+                        <span>Vinay Kumar</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- View: Dashboard -->
+            <div id="view-dashboard" class="view-section">
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+
+                    <!-- Stats Row -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <h3>Total Scanned</h3>
+                            <div class="stat-value" id="statTotal">0</div>
+                            <div class="stat-change">Lifetime interactions</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Spam Found</h3>
+                            <div class="stat-value" id="statSpam">0</div>
+                            <div class="stat-change negative">Threats detected</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Ham Found</h3>
+                            <div class="stat-value" id="statHam">0</div>
+                            <div class="stat-change positive">Safe messages</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>System Status</h3>
+                            <div class="stat-value status-ok">Active</div>
+                            <div class="stat-change">Operational</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Row -->
+                    <div class="main-row">
+                        <!-- Analysis Widget (Left, Larger) -->
+                        <div class="card analysis-widget">
+                            <div class="card-header">
+                                <h3>Quick Analysis</h3>
+                            </div>
+                            <div class="card-body">
+                                <textarea id="smsInput" placeholder="Paste suspicious message here to analyze..."
+                                    rows="4"></textarea>
+                                <div class="action-area">
+                                    <button id="analyzeBtn" class="btn-primary">
+                                        <span class="btn-text">Check Message</span>
+                                        <span class="loader hidden"></span>
+                                    </button>
+                                </div>
+
+                                <!-- Analysis Result -->
+                                <div id="result" class="result-area hidden">
+                                    <div class="result-header">
+                                        <span class="result-icon"></span>
+                                        <h4 id="predictionResult"></h4>
+                                    </div>
+                                    <p id="predictionDesc"></p>
+
+                                    <div class="feedback-buttons hidden" id="feedbackSection">
+                                        <span>Correct?</span>
+                                        <button class="icon-btn yes" id="feedbackYes">✓</button>
+                                        <button class="icon-btn no" id="feedbackNo">✗</button>
+                                    </div>
+                                    <p id="feedbackThanks" class="hidden success-text">Thanks!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Widget (Right, Smaller) -->
+                        <div class="card chart-widget">
+                            <div class="card-header">
+                                <h3>Traffic Overview</h3>
+                            </div>
+                            <div class="card-body centered">
+                                <div class="chart-container">
+                                    <canvas id="statsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Logs Row -->
+                    <div class="table-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Activity</h3>
+                            </div>
+                            <div class="card-body no-padding">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Message Snippet</th>
+                                            <th>Result</th>
+                                            <th>Time</th>
+                                            <th>Feedback</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="logsTableBody">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Analytics -->
+            <div id="view-analytics" class="view-section hidden">
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3>Traffic History (Last 7 Days)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container large">
+                            <canvas id="historyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: API Access -->
+            <div id="view-api" class="view-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Developer API Access</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="description">Use your API key to authenticate requests from your own applications.</p>
+
+                        <div class="key-display-area">
+                            <div class="key-box">
+                                <label>Your Secret Key</label>
+                                <div class="input-with-copy">
+                                    <input type="text" id="apiPageKey" readonly value="Loading...">
+                                    <button class="btn-copy">Copy</button>
+                                </div>
+                            </div>
+                            <button id="regenKeyBtn" class="btn-secondary">Regenerate Key</button>
+                        </div>
+
+                        <div class="code-examples">
+                            <h4>Integration Example (Python)</h4>
+                            <pre class="code-block"><code>import requests
+
+url = "{{host}}/predict"
+headers = {
+    "x-api-key": "<span class="key-placeholder">YOUR_KEY</span>",
+    "Content-Type": "application/json"
+}
+data = {"text": "Congratulations! You won."}
+
+response = requests.post(url, headers=headers, json=data)
+print(response.json())</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Settings -->
+            <div id="view-settings" class="view-section hidden">
+                <div class="card danger-zone">
+                    <div class="card-header">
+                        <h3>Danger Zone</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="setting-item">
+                            <div>
+                                <h4>Clear All Data</h4>
+                                <p>Delete all prediction logs and statistics. This cannot be undone.</p>
+                            </div>
+                            <button id="clearLogsBtn" class="btn-danger">Clear Logs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- API Key Modal -->
+    <div id="devModal" class="modal hidden">
+        <div class="modal-content card">
+            <span class="close-modal">&times;</span>
+            <h2>Developer Access</h2>
+            <div class="key-section">
+                <button id="generateKeyBtn" class="btn-primary">Generate API Key</button>
+                <div id="apiKeyDisplay" class="hidden">
+                    <code id="apiKeyCode">sk_live_...</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
